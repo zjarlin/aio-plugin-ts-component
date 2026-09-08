@@ -1,6 +1,6 @@
 # AIO TypeScript Component 插件
 
-这是使用 TypeScript、JCO 和 ComponentizeJS 构建的 AIO 全栈插件。它贡献一个计数器页面和账户区入口，并通过相同 Wasm Component 的 `handle` 导出提供受限后端请求处理。
+这是使用 TypeScript、JCO 和 ComponentizeJS 构建的 AIO 全栈插件。它贡献一个计数器页面和账户区入口，并通过相同 Wasm Component 的 `handle` 导出提供受限后端请求处理。计数器使用 `actions` 页面体，按钮事件由宿主携带可信租户上下文交给 Component，每个租户实例独立持有计数状态。
 
 ```bash
 corepack enable

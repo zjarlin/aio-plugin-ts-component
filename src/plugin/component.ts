@@ -1,8 +1,17 @@
 type RuntimeRequest = {
+  kind?: "service_request";
   method: string;
   path: string;
   query: string | null;
   body: string;
+  tenant_id: string;
+  user_id: string;
+};
+
+type PageActionRequest = {
+  kind: "page_action";
+  page_id: string;
+  action_id: string;
   tenant_id: string;
   user_id: string;
 };
@@ -13,8 +22,10 @@ type ComponentResponse = {
   body: string;
 };
 
-const pages = [
-  {
+let count = 0;
+
+function page() {
+  return {
     id: "ts-counter",
     label: "TypeScript",
     icon: "braces",
@@ -24,19 +35,35 @@ const pages = [
     },
     required_permission: null,
     body: {
-      kind: "counter",
+      kind: "actions",
       title: "TypeScript Component",
-      button: "TypeScript +1",
+      content: `计数：${count}`,
+      actions: [{ id: "increment", label: "TypeScript +1" }],
     },
-  },
-] as const;
+  } as const;
+}
 
 export function definition(): string {
-  return JSON.stringify(pages);
+  return JSON.stringify([page()]);
 }
 
 export function handle(request: string): string {
-  const parsed = JSON.parse(request) as RuntimeRequest;
+  const parsed = JSON.parse(request) as RuntimeRequest | PageActionRequest;
+  if (parsed.kind === "page_action") {
+    if (parsed.page_id !== "ts-counter" || parsed.action_id !== "increment") {
+      return JSON.stringify({
+        status: 400,
+        content_type: "application/json",
+        body: JSON.stringify({ error: "page action is not declared" }),
+      } satisfies ComponentResponse);
+    }
+    count += 1;
+    return JSON.stringify({
+      status: 200,
+      content_type: "application/json",
+      body: JSON.stringify({ body: page().body }),
+    } satisfies ComponentResponse);
+  }
   const response: ComponentResponse = {
     status: 200,
     content_type: "application/json",
