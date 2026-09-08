@@ -19,13 +19,15 @@ jobs:
           node-version: 24
 
       - name: 安装 TypeScript 依赖
-        run: corepack pnpm install --frozen-lockfile --ignore-scripts
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile --ignore-scripts
 
       - name: 验证 TypeScript 源码
         run: |
-          corepack pnpm typecheck
-          corepack pnpm test
-          corepack pnpm build
+          pnpm typecheck
+          pnpm test
+          pnpm build
 
       - name: 安装 Rust 工具链
         run: rustup toolchain install nightly --profile minimal
