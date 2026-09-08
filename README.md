@@ -15,3 +15,5 @@ wasm-tools component wit dist/plugin.wasm
 依赖安装禁用 lifecycle scripts。插件安装阶段只读取仓库内已提交的 Component artifact，不运行 pnpm 或任意构建脚本。
 
 ComponentizeJS 目前仍是实验性工具，SpiderMonkey 预初始化快照不保证字节级可重复。发布时必须提交 `dist/plugin.wasm`，AIO 安装器通过完整 Git 提交 SHA 锁定源码、锁文件和实际运行产物。
+
+`handle` 的 `PluginRequest` 与 `ComponentResponse` 结构以 AIO 的 `docs/plugin/schema/` 为准，可通过 `aio plugin schema schemas` 获取，不从宿主私有实现反推字段。

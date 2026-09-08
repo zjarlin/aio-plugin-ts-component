@@ -15,6 +15,7 @@ test("definition exposes the TypeScript counter", () => {
 
 test("handle preserves tenant and user context", () => {
   const request = {
+    kind: "service_request",
     method: "POST",
     path: "/echo",
     query: null,

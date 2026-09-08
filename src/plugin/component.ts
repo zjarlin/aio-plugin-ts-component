@@ -1,5 +1,5 @@
 type RuntimeRequest = {
-  kind?: "service_request";
+  kind: "service_request";
   method: string;
   path: string;
   query: string | null;
@@ -73,6 +73,13 @@ export function handle(request: string): string {
       status: 200,
       content_type: "application/json",
       body: JSON.stringify({ body: page(Number(count) + 1).body }),
+    } satisfies ComponentResponse);
+  }
+  if (parsed.kind !== "service_request") {
+    return JSON.stringify({
+      status: 400,
+      content_type: "application/json",
+      body: JSON.stringify({ error: "plugin request kind is not supported" }),
     } satisfies ComponentResponse);
   }
   const response: ComponentResponse = {
