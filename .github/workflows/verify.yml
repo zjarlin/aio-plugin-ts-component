@@ -18,10 +18,14 @@ jobs:
         with:
           node-version: 24
 
-      - name: 安装 TypeScript 依赖
+      - name: 启用仓库内 pnpm
         run: |
-          corepack enable
-          pnpm install --frozen-lockfile --ignore-scripts
+          mkdir -p "$RUNNER_TEMP/corepack"
+          corepack enable --install-directory "$RUNNER_TEMP/corepack"
+          echo "$RUNNER_TEMP/corepack" >> "$GITHUB_PATH"
+
+      - name: 安装 TypeScript 依赖
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: 验证 TypeScript 源码
         run: |
