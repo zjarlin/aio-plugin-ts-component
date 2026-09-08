@@ -1,0 +1,49 @@
+name: Verify plugin
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 安装 TypeScript 依赖
+        run: corepack pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: 验证 TypeScript 源码
+        run: |
+          corepack pnpm typecheck
+          corepack pnpm test
+          corepack pnpm build
+
+      - name: 安装 Rust 工具链
+        run: rustup toolchain install nightly --profile minimal
+
+      - name: 安装 Wasm 工具
+        run: cargo +nightly install wasm-tools --locked --version 1.245.1
+
+      - name: 验证 Component ABI
+        run: |
+          wasm-tools validate --features component-model dist/plugin.wasm
+          wasm-tools component wit dist/plugin.wasm
+
+      - name: 检出 AIO 宿主
+        uses: actions/checkout@v4
+        with:
+          repository: zjarlin/aio-public-shell
+          path: aio-public-shell
+
+      - name: 验证 Wasmtime 租户隔离
+        working-directory: aio-public-shell
+        run: AIO_TEST_WASM_COMPONENT="$GITHUB_WORKSPACE/dist/plugin.wasm" cargo +nightly test --no-default-features --features server activates_reuses_and_destroys_tenant_instances -- --ignored
