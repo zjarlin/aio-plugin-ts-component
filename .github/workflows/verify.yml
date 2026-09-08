@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zjarlin/aio
-          ref: 8fc7b148de4efd7cac736a4e32c0662317316a67
+          ref: ecf79e8c04e6ee4a8ab477955b933a4bb0b167ae
           path: aio-host-source
           submodules: recursive
 
@@ -59,7 +59,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zjarlin/aio-public-shell
-          ref: 03de1a3927a35257a09efb0688140d7d57f6430a
+          ref: 49a7aa04b30370aaa4862d06dbceea7724a27bbf
           path: aio-public-shell
 
       - name: 验证 Wasmtime 租户隔离

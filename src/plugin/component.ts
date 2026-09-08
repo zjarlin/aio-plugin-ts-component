@@ -14,6 +14,11 @@ type PageActionRequest = {
   action_id: string;
   tenant_id: string;
   user_id: string;
+  body: {
+    state?: {
+      count?: unknown;
+    };
+  };
 };
 
 type ComponentResponse = {
@@ -22,9 +27,7 @@ type ComponentResponse = {
   body: string;
 };
 
-let count = 0;
-
-function page() {
+function page(count = 0) {
   return {
     id: "ts-counter",
     label: "TypeScript",
@@ -38,6 +41,7 @@ function page() {
       kind: "actions",
       title: "TypeScript Component",
       content: `计数：${count}`,
+      state: { count },
       actions: [{ id: "increment", label: "TypeScript +1" }],
     },
   } as const;
@@ -57,11 +61,18 @@ export function handle(request: string): string {
         body: JSON.stringify({ error: "page action is not declared" }),
       } satisfies ComponentResponse);
     }
-    count += 1;
+    const count = parsed.body.state?.count;
+    if (!Number.isSafeInteger(count) || Number(count) < 0) {
+      return JSON.stringify({
+        status: 400,
+        content_type: "application/json",
+        body: JSON.stringify({ error: "page state count must be a non-negative integer" }),
+      } satisfies ComponentResponse);
+    }
     return JSON.stringify({
       status: 200,
       content_type: "application/json",
-      body: JSON.stringify({ body: page().body }),
+      body: JSON.stringify({ body: page(Number(count) + 1).body }),
     } satisfies ComponentResponse);
   }
   const response: ComponentResponse = {
