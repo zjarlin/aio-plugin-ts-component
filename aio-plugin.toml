@@ -10,6 +10,7 @@ database = false
 [[plugin.subplugins]]
 id = "ts-counter-screen"
 pages = ["ts-counter"]
+account_actions = ["ts-counter"]
 
 [[plugin.subplugins]]
 id = "ts-echo-service"
