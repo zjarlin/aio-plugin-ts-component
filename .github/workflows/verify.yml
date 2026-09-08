@@ -44,10 +44,22 @@ jobs:
           wasm-tools validate --features component-model dist/plugin.wasm
           wasm-tools component wit dist/plugin.wasm
 
+      - name: 检出 AIO 校验器
+        uses: actions/checkout@v4
+        with:
+          repository: zjarlin/aio
+          ref: c868be09f180332c7af8880e16e54030b003866c
+          path: aio-host-source
+          submodules: recursive
+
+      - name: 验证 AIO 插件协议
+        run: cargo +nightly run --manifest-path aio-host-source/Cargo.toml --bin aio -- plugin validate "$GITHUB_WORKSPACE"
+
       - name: 检出 AIO 宿主
         uses: actions/checkout@v4
         with:
           repository: zjarlin/aio-public-shell
+          ref: 2b658f44db4b0e02c7a9b44db82bd3924837dfcc
           path: aio-public-shell
 
       - name: 验证 Wasmtime 租户隔离
