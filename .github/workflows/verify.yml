@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zjarlin/aio
-          ref: f7724871f597751420c76ca46970692b170301a6
+          ref: 68ab02d1b65928b011f764b114d69e9d8ed9ee20
           path: aio-host-source
           submodules: recursive
 
@@ -74,7 +74,7 @@ jobs:
             --rawfile artifact_base64 "$artifact_file" \
             --arg artifact_sha256 "$artifact_sha256" \
             '{git:$git, rev:$rev, manifest_toml:$manifest, artifact_base64:$artifact_base64, artifact_sha256:$artifact_sha256}' \
-            | curl --fail --show-error --request POST \
+            | curl --fail-with-body --show-error --request POST \
                 --header "authorization: Bearer $AIO_PLUGIN_PUBLISH_TOKEN" \
                 --header 'content-type: application/json' \
                 --data-binary @- "$AIO_PLUGIN_PUBLISH_URL"
@@ -83,7 +83,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zjarlin/aio-public-shell
-          ref: 84237db8c97cb4f755a8991957f0fa3a8f8a7599
+          ref: fcdc4e0e6193062e4f6cebd32885f61702665dc9
           path: aio-public-shell
 
       - name: 验证 Wasmtime 租户隔离
