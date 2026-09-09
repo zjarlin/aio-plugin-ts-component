@@ -64,13 +64,14 @@ jobs:
           if [ -z "$AIO_PLUGIN_PUBLISH_TOKEN" ]; then
             exit 0
           fi
-          artifact_base64="$(base64 --wrap=0 dist/plugin.wasm)"
+          artifact_file="$RUNNER_TEMP/plugin.wasm.base64"
+          base64 --wrap=0 dist/plugin.wasm | tr -d '\n' > "$artifact_file"
           artifact_sha256="$(sha256sum dist/plugin.wasm | awk '{print $1}')"
           jq -n \
             --arg git "${{ github.server_url }}/${{ github.repository }}.git" \
             --arg rev "$GITHUB_SHA" \
             --rawfile manifest aio-plugin.toml \
-            --arg artifact_base64 "$artifact_base64" \
+            --rawfile artifact_base64 "$artifact_file" \
             --arg artifact_sha256 "$artifact_sha256" \
             '{git:$git, rev:$rev, manifest_toml:$manifest, artifact_base64:$artifact_base64, artifact_sha256:$artifact_sha256}' \
             | curl --fail --show-error --request POST \
@@ -82,7 +83,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zjarlin/aio-public-shell
-          ref: 1113807bce777530018fae1a1a5e7bec056bdb22
+          ref: 84237db8c97cb4f755a8991957f0fa3a8f8a7599
           path: aio-public-shell
 
       - name: 验证 Wasmtime 租户隔离
