@@ -2,6 +2,12 @@
 kind = "wasm-component"
 artifact = "dist/plugin.wasm"
 
+[plugin.marketplace]
+title = "TypeScript Wasm Component"
+summary = "Component 模型编译的 TypeScript 计数页面与 Echo 服务。"
+license = "MIT"
+tags = ["typescript", "wasm", "component"]
+
 [plugin.capabilities]
 network = []
 filesystem = []
