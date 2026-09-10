@@ -12,12 +12,12 @@ jobs:
   verify:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: 保存提交内发布产物
         run: cp dist/plugin.wasm "$RUNNER_TEMP/published-plugin.wasm"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
 
@@ -54,7 +54,7 @@ jobs:
           wasm-tools component wit dist/plugin.wasm
 
       - name: 检出 AIO 校验器
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: zjarlin/aio
           ref: 52fa78b686a293a71bd4e65d74c770941613cd5d
@@ -76,7 +76,7 @@ jobs:
           cargo +nightly run --manifest-path aio-host-source/Cargo.toml --bin aio -- plugin publish "$GITHUB_WORKSPACE"
 
       - name: 检出 AIO 宿主
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: zjarlin/aio-public-shell
           ref: 53793e88c686e21b0719088c03fb0b15425f32db
