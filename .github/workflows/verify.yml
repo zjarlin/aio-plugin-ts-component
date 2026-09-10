@@ -74,7 +74,9 @@ jobs:
             --rawfile artifact_base64 "$artifact_file" \
             --arg artifact_sha256 "$artifact_sha256" \
             '{git:$git, rev:$rev, manifest_toml:$manifest, artifact_base64:$artifact_base64, artifact_sha256:$artifact_sha256}' \
+            | gzip -c \
             | curl --fail-with-body --show-error --request POST \
+                --header 'content-encoding: gzip' \
                 --header "authorization: Bearer $AIO_PLUGIN_PUBLISH_TOKEN" \
                 --header 'content-type: application/json' \
                 --data-binary @- "$AIO_PLUGIN_PUBLISH_URL"
@@ -83,7 +85,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: zjarlin/aio-public-shell
-          ref: fcdc4e0e6193062e4f6cebd32885f61702665dc9
+          ref: 859019163c72bf90bad2433b005f11bdc3c5626c
           path: aio-public-shell
 
       - name: 验证 Wasmtime 租户隔离
